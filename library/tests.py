@@ -91,3 +91,53 @@ class BookViewSetTests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data['message'], "No books found matching the provided filters.")
+
+    # New test methods
+
+    def test_update_book_to_lost_status(self):
+        """Test updating a book's status to 'lost' results in deletion"""
+        url = reverse('book-detail', args=[self.book1.id])
+        data = {
+            "status": "lost",
+        }
+        response = self.client.patch(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)  # Expecting 204 since it is deleted
+        self.assertFalse(Book.objects.filter(id=self.book1.id).exists())
+
+    def test_update_book_to_damaged_status(self):
+        """Test updating a book's status to 'damaged' results in deletion"""
+        url = reverse('book-detail', args=[self.book1.id])
+        data = {
+            "status": "damaged",
+        }
+        response = self.client.patch(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)  # Expecting 204 since it is deleted
+        self.assertFalse(Book.objects.filter(id=self.book1.id).exists())
+
+    def test_create_book_with_lost_status(self):
+        """Test creating a book with 'lost' status is not allowed"""
+        url = reverse('book-list')
+        data = {
+            "title": "Lost Book",
+            "author": "Author",
+            "genre": "Fiction",
+            "publication_date": "2024-01-01",
+            "status": "lost",
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Cannot create a book with 'lost' or 'damaged' status", str(response.data['message']))
+
+    def test_create_book_with_damaged_status(self):
+        """Test creating a book with 'damaged' status is not allowed"""
+        url = reverse('book-list')
+        data = {
+            "title": "Damaged Book",
+            "author": "Author",
+            "genre": "Fiction",
+            "publication_date": "2024-01-01",
+            "status": "damaged",
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Cannot create a book with 'lost' or 'damaged' status", str(response.data['message']))
