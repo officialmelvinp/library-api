@@ -75,7 +75,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+#combining two database together
 DATABASES = {
     "default": dj_database_url.config(
         default="sqlite:///db.sqlite3",
