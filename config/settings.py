@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 from pathlib import Path
 from decouple import config, Csv
@@ -135,3 +136,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+=======
+>>>>>>> f25d6e88312a5cbe7b06ee9325e780ae903f8976
